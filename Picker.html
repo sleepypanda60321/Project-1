@@ -1,281 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .container {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-        }
-        
-        h1 {
-            font-size: 36px;
-            color: #000;
-            text-align: center;
-            margin: 0 0 30px 0;
-            width: 100%;
-        }
-        
-        .input-container {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-        }
-        
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-        }
-        
-        label {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            text-align: center;
-            width: 100%;
-        }
-        
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            width: 200px;
-            text-align: center;
-        }
-        
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-        
-        button {
-            padding: 12px 30px;
-            font-size: 18px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #0056b3;
-        }
-        
-        .result-container {
-            margin-top: 30px;
-            text-align: center;
-            width: 100%;
-        }
-        
-        .result-container h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .result-number {
-            font-size: 48px;
-            font-weight: bold;
-            color: #007bff;
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border: 3px solid #007bff;
-            display: inline-block;
-            min-width: 120px;
-            text-align: center;
-        }
-        
-        .generator-section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            margin-bottom: 100px;
-        }
-        
-        .navigation-buttons {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px;
-            pointer-events: none;
-        }
-        
-        .back-btn {
-            padding: 12px 30px;
-            font-size: 18px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            pointer-events: auto;
-        }
-        
-        .back-btn:hover {
-            background-color: #5a6268;
-        }
-        
-        .history-btn {
-            background-color: #28a745;
-            padding: 12px 30px;
-            font-size: 18px;
-            text-decoration: none;
-            color: white;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            pointer-events: auto;
-        }
-        
-        .history-btn:hover {
-            background-color: #218838;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Random Number Picker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Anti-cache so updates show immediately -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <style>
+    :root{
+      --primary:#007bff;
+      --primary-dark:#0056b3;
+      --muted:#6c757d;
+      --success:#28a745;
+      --border:#e3e6ea;
+      --text:#111;
+      --subtext:#444;
+      --bg:#fff;
+      --card:#f8f9fa;
+      --ring: rgba(0,123,255,0.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg); color:var(--text);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .container{
+      width:100%; max-width:640px; padding:20px;
+      display:flex; flex-direction:column; align-items:center; gap:20px;
+    }
+    h1{
+      margin:0; text-align:center; font-size:clamp(24px,3.5vw,36px);
+    }
+    .card{
+      width:100%;
+      background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.06);
+    }
+    .fields{
+      display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:end;
+    }
+    @media (max-width:520px){ .fields{ grid-template-columns:1fr; } }
+    .field{ display:flex; flex-direction:column; gap:8px; }
+    label{ font-weight:600; color:var(--subtext); }
+    input[type="number"]{
+      padding:12px 14px; font-size:16px; border:2px solid var(--border); border-radius:8px;
+      outline:none; width:100%;
+    }
+    input[type="number"]:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px var(--ring);
+    }
+    .actions{
+      display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;
+    }
+    button{
+      cursor:pointer; border:0; border-radius:10px; font-weight:700; letter-spacing:.2px;
+      transition:transform .06s ease, background-color .2s ease, box-shadow .2s ease;
+    }
+    .btn-primary{
+      background:var(--primary); color:#fff; padding:12px 20px; font-size:16px;
+      box-shadow: 0 4px 14px rgba(0,123,255,.25);
+    }
+    .btn-primary:hover{ background:var(--primary-dark); }
+    .btn-ghost{
+      background:#fff; color:var(--muted); padding:12px 16px; font-size:14px; border:1px solid var(--border);
+    }
+    .btn-ghost:hover{ background:#f6f7f9; }
+    .result{
+      margin-top:18px; text-align:center;
+    }
+    .result h2{
+      margin:0 0 8px; font-size:20px; color:var(--subtext); font-weight:600;
+    }
+    .bubble{
+      display:inline-block; min-width:160px;
+      padding:16px 22px; font-size:48px; font-weight:900; color:var(--primary);
+      background:var(--card); border:3px solid var(--primary); border-radius:14px;
+      transform:scale(1); transition: transform .2s ease;
+    }
+    .error{
+      margin-top:10px; color:#b00020; font-weight:600; font-size:14px; display:none;
+    }
+
+    /* Fixed bottom nav, kept light so it never hides the result */
+    .nav{
+      position:fixed; left:0; right:0; bottom:16px; display:flex; justify-content:space-between; padding:0 16px; pointer-events:none;
+    }
+    .nav a{
+      pointer-events:auto; text-decoration:none; color:#fff; padding:12px 18px; border-radius:10px; font-weight:700;
+      transition:background .2s ease, transform .06s ease;
+    }
+    .nav a:active{ transform:translateY(1px) }
+    .back{ background:var(--muted); }
+    .back:hover{ background:#5a6268; }
+    .history{ background:var(--success); }
+    .history:hover{ background:#218838; }
+
+    /* Motion-reduce support */
+    @media (prefers-reduced-motion: reduce){
+      .bubble{ transition:none }
+      button{ transition:none }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to our random number picker website!</h1>
-        
-        <div class="generator-section">
-            <div class="input-container">
-                <div class="input-group">
-                    <label for="min">Minimum:</label>
-                    <input type="number" id="min" placeholder="Enter minimum value">
-                </div>
-                <div class="input-group">
-                    <label for="max">Maximum:</label>
-                    <input type="number" id="max" placeholder="Enter maximum value">
-                </div>
-                <button id="generateBtn">Generate</button>
-            </div>
-            
-            <div class="result-container" id="resultContainer" style="display: none;">
-                <h2>Your random number is:</h2>
-                <div class="result-number" id="resultNumber"></div>
-            </div>
+  <noscript>
+    <div style="padding:12px 16px; background:#fff3cd; border:1px solid #ffeeba; border-radius:8px; color:#856404;">
+      This page requires JavaScript to generate random numbers.
+    </div>
+  </noscript>
+
+  <div class="container" role="main">
+    <h1>Random Number Picker</h1>
+
+    <section class="card" aria-labelledby="generator-title">
+      <form id="generatorForm" novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="min">Minimum</label>
+            <input
+              id="min"
+              name="min"
+              type="number"
+              inputmode="numeric"
+              placeholder="e.g. 1"
+              aria-describedby="minHelp"
+            />
+            <small id="minHelp" style="color:#777">Use integers only.</small>
+          </div>
+
+          <div class="field">
+            <label for="max">Maximum</label>
+            <input
+              id="max"
+              name="max"
+              type="number"
+              inputmode="numeric"
+              placeholder="e.g. 100"
+              aria-describedby="maxHelp"
+            />
+            <small id="maxHelp" style="color:#777">Must be greater than Minimum.</small>
+          </div>
         </div>
-    </div>
-    
-    <div class="navigation-buttons">
-        <a href="main.html" class="back-btn">← Back to Main</a>
-        <a href="history.html" class="history-btn">History</a>
-    </div>
-    
-    <script>
-        // Add Enter key support for inputs
-        document.getElementById('min').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('generateBtn').click();
-            }
-        });
-        
-        document.getElementById('max').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('generateBtn').click();
-            }
-        });
-        
-        // History functionality
-        let history = [];
-        
-        // Load existing history from localStorage
-        function loadHistory() {
-            const savedHistory = localStorage.getItem('randomNumberHistory');
-            if (savedHistory) {
-                history = JSON.parse(savedHistory);
-            }
+
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="generateBtn">Generate</button>
+          <button type="button" class="btn-ghost" id="swapBtn" title="Swap min and max">Swap</button>
+          <button type="button" class="btn-ghost" id="clearBtn" title="Clear inputs">Clear</button>
+        </div>
+
+        <p class="error" id="errorMsg" role="alert"></p>
+
+        <div class="result" id="resultContainer" aria-live="polite" aria-atomic="true">
+          <!-- Hidden until first result -->
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- Bottom navigation -->
+  <nav class="nav" aria-label="Navigation">
+    <!-- Your main page is index.html (per your repo setup) -->
+    <a href="index.html" class="back">← Back to Main</a>
+    <a href="history.html" class="history">History</a>
+  </nav>
+
+  <script>
+    (function(){
+      'use strict';
+
+      const el = {
+        form: document.getElementById('generatorForm'),
+        min: document.getElementById('min'),
+        max: document.getElementById('max'),
+        gen: document.getElementById('generateBtn'),
+        swap: document.getElementById('swapBtn'),
+        clear: document.getElementById('clearBtn'),
+        error: document.getElementById('errorMsg'),
+        resultWrap: document.getElementById('resultContainer')
+      };
+
+      // Prefill last-used range (if any)
+      const lastRange = safeJSONParse(localStorage.getItem('rngLastRange'), null);
+      if (lastRange && Number.isSafeInteger(lastRange.min) && Number.isSafeInteger(lastRange.max)) {
+        el.min.value = String(lastRange.min);
+        el.max.value = String(lastRange.max);
+      }
+
+      // Utilities
+      function safeJSONParse(str, fallback){
+        try { return JSON.parse(str); } catch { return fallback; }
+      }
+
+      function showError(msg){
+        el.error.textContent = msg;
+        el.error.style.display = 'block';
+      }
+      function hideError(){
+        el.error.textContent = '';
+        el.error.style.display = 'none';
+      }
+
+      function parseIntStrict(value){
+        // Disallow decimals/empty/whitespace nonsense
+        if (value === '' || value === null || value === undefined) return NaN;
+        const n = Number(value);
+        return Number.isInteger(n) ? n : NaN;
+      }
+
+      // Crypto-strong uniform integer in [min, max], inclusive.
+      function randomIntInclusive(min, max){
+        const range = max - min + 1;
+        if (range <= 0) throw new Error('Invalid range');
+
+        const cryptoObj = (window.crypto || window.msCrypto);
+        if (!cryptoObj) {
+          // Fallback to Math.random()
+          return min + Math.floor(Math.random() * range);
         }
-        
-        // Save history to localStorage
-        function saveHistory() {
-            localStorage.setItem('randomNumberHistory', JSON.stringify(history));
+
+        // Rejection-sampling for unbiased result
+        const maxUint = 0xFFFFFFFF; // 2^32 - 1
+        const bucketSize = Math.floor((maxUint + 1) / range);
+        const limit = bucketSize * range - 1;
+
+        const buf = new Uint32Array(1);
+        let r;
+        do {
+          cryptoObj.getRandomValues(buf);
+          r = buf[0];
+        } while (r > limit);
+
+        return min + (r % range);
+      }
+
+      function renderResult(n){
+        // Build once; update thereafter
+        if (!el.resultWrap.firstChild) {
+          const h = document.createElement('h2');
+          h.textContent = 'Your random number is:';
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          bubble.id = 'resultNumber';
+          bubble.textContent = n;
+          el.resultWrap.appendChild(h);
+          el.resultWrap.appendChild(bubble);
+        } else {
+          const bubble = document.getElementById('resultNumber');
+          bubble.textContent = n;
+          // Tiny pop animation
+          bubble.style.transform = 'scale(1.08)';
+          setTimeout(()=>{ bubble.style.transform = 'scale(1)'; }, 160);
         }
-        
-        // Load history when page loads
-        loadHistory();
-        
-        // Modify the generate function to add to history
-        document.getElementById('generateBtn').addEventListener('click', function() {
-            const minInput = document.getElementById('min');
-            const maxInput = document.getElementById('max');
-            const resultContainer = document.getElementById('resultContainer');
-            const resultNumber = document.getElementById('resultNumber');
-            
-            // Get the values from inputs
-            const min = parseInt(minInput.value);
-            const max = parseInt(maxInput.value);
-            
-            // Validate inputs
-            if (isNaN(min) || isNaN(max)) {
-                alert('Please enter valid numbers for both minimum and maximum values.');
-                return;
-            }
-            
-            if (min >= max) {
-                alert('Minimum value must be less than maximum value.');
-                return;
-            }
-            
-            // Generate random number
-            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-            
-            // Add to history
-            history.push({
-                min: min,
-                max: max,
-                outcome: randomNumber
-            });
-            
-            // Save to localStorage
-            saveHistory();
-            
-            // Display result
-            resultNumber.textContent = randomNumber;
-            resultContainer.style.display = 'block';
-            
-            // Add some animation effect
-            resultNumber.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                resultNumber.style.transform = 'scale(1)';
-            }, 200);
-        });
-    </script>
+      }
+
+      function saveHistory(min, max, outcome){
+        const key = 'randomNumberHistory';
+        const list = safeJSONParse(localStorage.getItem(key), []);
+        list.push({ min, max, outcome });
+        // Keep history from growing unbounded (cap 1000)
+        if (list.length > 1000) list.splice(0, list.length - 1000);
+        localStorage.setItem(key, JSON.stringify(list));
+      }
+
+      // Events
+      el.form.addEventListener('submit', function(e){
+        e.preventDefault();
+        hideError();
+
+        const min = parseIntStrict(el.min.value.trim());
+        const max = parseIntStrict(el.max.value.trim());
+
+        if (Number.isNaN(min) || Number.isNaN(max)) {
+          showError('Please enter valid whole numbers for both Minimum and Maximum.');
+          return;
+        }
+        if (!Number.isSafeInteger(min) || !Number.isSafeInteger(max)) {
+          showError('Numbers must be safe integers (between -9,007,199,254,740,992 and 9,007,199,254,740,992).');
+          return;
+        }
+        if (min >= max) {
+          showError('Minimum must be less than Maximum.');
+          return;
+        }
+
+        // Persist last used range
+        localStorage.setItem('rngLastRange', JSON.stringify({ min, max }));
+
+        let result;
+        try {
+          result = randomIntInclusive(min, max);
+        } catch (err) {
+          showError('Invalid range. Please check your inputs.');
+          return;
+        }
+
+        renderResult(result);
+        saveHistory(min, max, result);
+
+        // Ensure result is visible (layout is compact; this is a no-op unless very small screens)
+        el.resultWrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+
+      el.swap.addEventListener('click', function(){
+        const a = el.min.value;
+        el.min.value = el.max.value;
+        el.max.value = a;
+        hideError();
+        el.min.focus();
+      });
+
+      el.clear.addEventListener('click', function(){
+        el.min.value = '';
+        el.max.value = '';
+        hideError();
+        el.resultWrap.innerHTML = '';
+        localStorage.removeItem('rngLastRange');
+        el.min.focus();
+      });
+
+      // Pressing Enter in either input submits the form (handled by <form>).
+      // Arrow up/down step by 1 for convenience
+      function stepInput(input, delta){
+        const val = parseIntStrict(input.value || '0');
+        input.value = String(Number.isNaN(val) ? delta : (val + delta));
+      }
+      el.min.addEventListener('keydown', (e)=>{ if(e.key==='ArrowUp'){ stepInput(el.min, +1);} else if(e.key==='ArrowDown'){ stepInput(el.min, -1);} });
+      el.max.addEventListener('keydown', (e)=>{ if(e.key==='ArrowUp'){ stepInput(el.max, +1);} else if(e.key==='ArrowDown'){ stepInput(el.max, -1);} });
+
+    })();
+  </script>
 </body>
-</html> 
+</html>
