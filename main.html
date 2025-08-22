@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Little Things</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            color: #000;
+            text-align: center;
+            margin: 0 0 50px 0;
+            width: 100%;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 250px;
+        }
+        
+        .nav-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .nav-btn.secondary {
+            background-color: #28a745;
+        }
+        
+        .nav-btn.secondary:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Little Things</h1>
+        
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn">Random Number Picker</a>
+            <a href="tictactoe.html" class="nav-btn secondary">Tic Tac Toe</a>
+        </div>
+    </div>
+</body>
+</html>
