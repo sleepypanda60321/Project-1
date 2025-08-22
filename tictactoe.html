@@ -1,433 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe - Random Little Things</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: white;
-            min-height: 100vh;
-        }
-        
-        .container {
-            text-align: center;
-            padding: 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .game-section {
-            display: flex;
-            justify-content: center;
-            gap: 80px;
-            margin-top: 30px;
-            align-items: flex-start;
-        }
-        
-        .left-side {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-            position: relative;
-        }
-        
-        .right-side {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            padding-top: 20px;
-        }
-        
-        .game-board {
-            position: relative;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-            background-color: #333;
-            padding: 5px;
-            border-radius: 10px;
-            margin: 0 auto;
-            border: 3px solid red;
-        }
-        
-        h1 {
-            font-size: 36px;
-            color: #000;
-            text-align: center;
-            margin: 0 0 30px 0;
-            width: 100%;
-        }
-        
-        .turn-indicator {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            transition: color 0.3s;
-        }
-        
-        .turn-indicator.x-turn {
-            color: #dc3545;
-        }
-        
-        .turn-indicator.o-turn {
-            color: #007bff;
-        }
-        
-        .tile {
-            width: 120px;
-            height: 120px;
-            background-color: white;
-            border: none;
-            font-size: 60px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid blue;
-        }
-        
-        .tile:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .tile.x {
-            color: #dc3545;
-        }
-        
-        .tile.o {
-            color: #007bff;
-        }
-        
-        .tile.winning {
-            background-color: #28a745;
-            color: white;
-        }
-        
-        .score-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-        
-        .score-item {
-            text-align: center;
-        }
-        
-        .score-label {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .score-value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .score-x .score-label {
-            color: #dc3545;
-        }
-        
-        .score-o .score-label {
-            color: #007bff;
-        }
-        
-        .play-again-btn {
-            padding: 15px 40px;
-            font-size: 18px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: block;
-            width: 200px;
-            margin-top: 10px;
-            position: absolute;
-            top: 200px;
-            left: -290px;
-            z-index: 1000;
-        }
-        
-        .play-again-btn:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
-        
-        .back-btn {
-            padding: 12px 30px;
-            font-size: 18px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-decoration: none;
-            display: inline-block;
-            width: 200px;
-            text-align: center;
-            margin-top: 10px;
-            position: absolute;
-            top: 260px;
-            left: -315px;
-            z-index: 1000;
-        }
-        
-        .back-btn:hover {
-            background-color: #5a6268;
-        }
-        
-        .winner-line {
-            position: absolute;
-            background-color: #000;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        .winner-line.horizontal {
-            height: 4px;
-            width: 370px;
-        }
-        
-        .winner-line.vertical {
-            width: 4px;
-            height: 370px;
-        }
-        
-        .winner-line.diagonal {
-            width: 4px;
-            height: 530px;
-        }
-        
-        .winner-line.diagonal-2 {
-            width: 4px;
-            height: 530px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+  :root {
+    --cell-size: 120px;
+    --gap: 5px;
+    --line-thickness: 6px;
+    --win-color: #28a745;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    text-align: center;
+    position: relative;
+    padding: 20px;
+  }
+
+  .back-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+  .back-btn:hover { background-color: #333; }
+
+  h1 { margin: 16px 0 16px; }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, var(--cell-size));
+    grid-template-rows: repeat(3, var(--cell-size));
+    gap: var(--gap);
+    position: relative;
+    margin: 0 auto 20px;
+    background: #333;
+    padding: var(--gap);
+    border-radius: 12px;
+  }
+
+  .cell {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid blue;
+  }
+  .cell.taken { cursor: not-allowed; }
+
+  .status {
+    font-size: 24px;
+    margin-bottom: 20px;
+    min-height: 30px;
+  }
+
+  .score-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 20px;
+  }
+  .score-item { text-align: center; }
+  .score-label { font-weight: bold; font-size: 18px; margin-bottom: 5px; }
+  .score-value { font-size: 24px; font-weight: bold; }
+  .score-x .score-label { color: #dc3545; }
+  .score-o .score-label { color: #007bff; }
+
+  .btn {
+    padding: 12px 28px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .btn:hover { background-color: #218838; }
+
+  .win-line {
+    position: absolute;
+    height: var(--line-thickness);
+    background: var(--win-color);
+    border-radius: 999px;
+    pointer-events: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Tic Tac Toe</h1>
-        
-        <div class="game-section">
-            <div class="left-side">
-                <div class="turn-indicator x-turn" id="turnIndicator">X Turn</div>
-                <div class="game-board" id="gameBoard">
-                    <button class="tile" data-index="0"></button>
-                    <button class="tile" data-index="1"></button>
-                    <button class="tile" data-index="2"></button>
-                    <button class="tile" data-index="3"></button>
-                    <button class="tile" data-index="4"></button>
-                    <button class="tile" data-index="5"></button>
-                    <button class="tile" data-index="6"></button>
-                    <button class="tile" data-index="7"></button>
-                    <button class="tile" data-index="8"></button>
-                </div>
-                <button class="play-again-btn" id="playAgainBtn">Play Again</button>
-                <a href="main.html" class="back-btn">← Back to Main</a>
-            </div>
-            <div class="right-side">
-                <div class="score-container">
-                    <div class="score-item score-x">
-                        <div class="score-label">X Score</div>
-                        <div class="score-value" id="xScore">0</div>
-                    </div>
-                    <div class="score-item score-o">
-                        <div class="score-label">O Score</div>
-                        <div class="score-value" id="oScore">0</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container">
+  <a href="index.html" class="back-btn">Back</a>
+  <h1>Tic Tac Toe</h1>
+  <div class="status" id="turnIndicator">X Turn</div>
+  <div class="board" id="gameBoard"></div>
+
+  <div class="score-container">
+    <div class="score-item score-x">
+      <div class="score-label">X Score</div>
+      <div class="score-value" id="xScore">0</div>
     </div>
-    
-    <script>
-        let currentPlayer = 'X';
-        let gameBoard = ['', '', '', '', '', '', '', '', ''];
-        let gameActive = true;
-        let xScore = 0;
-        let oScore = 0;
-        
-        const winningCombinations = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-            [0, 4, 8], [2, 4, 6] // Diagonals
-        ];
-        
-        const turnIndicator = document.getElementById('turnIndicator');
-        const tiles = document.querySelectorAll('.tile');
-        const xScoreElement = document.getElementById('xScore');
-        const oScoreElement = document.getElementById('oScore');
-        const playAgainBtn = document.getElementById('playAgainBtn');
-        
-        // Load scores from localStorage
-        function loadScores() {
-            const savedScores = localStorage.getItem('tictactoeScores');
-            if (savedScores) {
-                const scores = JSON.parse(savedScores);
-                xScore = scores.x || 0;
-                oScore = scores.o || 0;
-                updateScoreDisplay();
-            }
-        }
-        
-        // Save scores to localStorage
-        function saveScores() {
-            localStorage.setItem('tictactoeScores', JSON.stringify({ x: xScore, o: oScore }));
-        }
-        
-        function updateScoreDisplay() {
-            xScoreElement.textContent = xScore;
-            oScoreElement.textContent = oScore;
-        }
-        
-        function updateTurnIndicator() {
-            turnIndicator.textContent = currentPlayer + ' Turn';
-            turnIndicator.className = 'turn-indicator ' + (currentPlayer === 'X' ? 'x-turn' : 'o-turn');
-        }
-        
-        function handleTileClick(index) {
-            if (gameBoard[index] !== '' || !gameActive) return;
-            
-            gameBoard[index] = currentPlayer;
-            tiles[index].textContent = currentPlayer;
-            tiles[index].classList.add(currentPlayer.toLowerCase());
-            
-            if (checkWinner()) {
-                gameActive = false;
-                if (currentPlayer === 'X') {
-                    xScore++;
-                    turnIndicator.textContent = 'Winner: X';
-                    turnIndicator.className = 'turn-indicator x-turn';
-                } else {
-                    oScore++;
-                    turnIndicator.textContent = 'Winner: O';
-                    turnIndicator.className = 'turn-indicator o-turn';
-                }
-                saveScores();
-                updateScoreDisplay();
-                playAgainBtn.style.display = 'inline-block';
-                return;
-            }
-            
-            if (checkDraw()) {
-                gameActive = false;
-                turnIndicator.textContent = 'Draw!';
-                turnIndicator.className = 'turn-indicator';
-                playAgainBtn.style.display = 'inline-block';
-                return;
-            }
-            
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            updateTurnIndicator();
-        }
-        
-        function checkWinner() {
-            for (let combination of winningCombinations) {
-                const [a, b, c] = combination;
-                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-                    // Draw winning line
-                    drawWinningLine(combination);
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        function drawWinningLine(combination) {
-            const [a, b, c] = combination;
-            const line = document.createElement('div');
-            line.className = 'winner-line';
-            
-            // Position lines relative to the centered game board
-            if (a === 0 && b === 1 && c === 2) { // Top row
-                line.classList.add('horizontal');
-                line.style.top = '62.5px';
-                line.style.left = '50%';
-                line.style.transform = 'translateX(-50%)';
-            } else if (a === 3 && b === 4 && c === 5) { // Middle row
-                line.classList.add('horizontal');
-                line.style.top = '187.5px';
-                line.style.left = '50%';
-                line.style.transform = 'translateX(-50%)';
-            } else if (a === 6 && b === 7 && c === 8) { // Bottom row
-                line.classList.add('horizontal');
-                line.style.top = '312.5px';
-                line.style.left = '50%';
-                line.style.transform = 'translateX(-50%)';
-            } else if (a === 0 && b === 3 && c === 6) { // Left column
-                line.classList.add('vertical');
-                line.style.left = '62.5px';
-                line.style.top = '5px';
-            } else if (a === 1 && b === 4 && c === 7) { // Middle column
-                line.classList.add('vertical');
-                line.style.left = '187.5px';
-                line.style.top = '5px';
-            } else if (a === 2 && b === 5 && c === 8) { // Right column
-                line.classList.add('vertical');
-                line.style.left = '312.5px';
-                line.style.top = '5px';
-            } else if (a === 0 && b === 4 && c === 8) { // Diagonal from top-left to bottom-right
-                line.classList.add('diagonal');
-                line.style.left = '187.5px';
-                line.style.top = '-73px';
-                line.style.transform = 'rotate(45deg)';
-            } else if (a === 2 && b === 4 && c === 6) { // Diagonal from top-right to bottom-left
-                line.classList.add('diagonal-2');
-                line.style.left = '187.5px';
-                line.style.top = '-73px';
-                line.style.transform = 'rotate(-45deg)';
-            }
-            
-            document.getElementById('gameBoard').appendChild(line);
-        }
-        
-        function checkDraw() {
-            return gameBoard.every(tile => tile !== '');
-        }
-        
-        function resetGame() {
-            gameBoard = ['', '', '', '', '', '', '', '', ''];
-            gameActive = true;
-            currentPlayer = 'X';
-            
-            tiles.forEach(tile => {
-                tile.textContent = '';
-                tile.className = 'tile';
-            });
-            
-            updateTurnIndicator();
-            playAgainBtn.style.display = 'none';
-            
-            // Remove winning lines
-            const winningLines = document.querySelectorAll('.winner-line');
-            winningLines.forEach(line => line.remove());
-        }
-        
-        // Event listeners
-        tiles.forEach(tile => {
-            tile.addEventListener('click', () => {
-                const index = parseInt(tile.dataset.index);
-                handleTileClick(index);
-            });
-        });
-        
-        playAgainBtn.addEventListener('click', resetGame);
-        
-        // Initialize game
-        loadScores();
-        updateTurnIndicator();
-    </script>
+    <div class="score-item score-o">
+      <div class="score-label">O Score</div>
+      <div class="score-value" id="oScore">0</div>
+    </div>
+  </div>
+
+  <button class="btn" id="playAgainBtn">Play Again</button>
+</div>
+
+<script>
+  const boardEl = document.getElementById('gameBoard');
+  const turnIndicator = document.getElementById('turnIndicator');
+  const xScoreEl = document.getElementById('xScore');
+  const oScoreEl = document.getElementById('oScore');
+  const playAgainBtn = document.getElementById('playAgainBtn');
+
+  let currentPlayer = 'X';
+  let board = Array(9).fill('');
+  let gameActive = true;
+  let xScore = 0;
+  let oScore = 0;
+  let cells = [];
+  let winLineEl = null;
+  let lastWinningCombo = null;
+
+  const winningCombos = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  // Load scores from localStorage
+  const savedScores = JSON.parse(localStorage.getItem('tictactoeScores') || '{}');
+  xScore = savedScores.x || 0;
+  oScore = savedScores.o || 0;
+  updateScoreDisplay();
+
+  // Build cells
+  for(let i=0;i<9;i++){
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.index = i;
+    cell.addEventListener('click', () => handleTileClick(i));
+    boardEl.appendChild(cell);
+    cells.push(cell);
+  }
+
+  function handleTileClick(idx){
+    if(!gameActive || board[idx]) return;
+
+    board[idx] = currentPlayer;
+    cells[idx].textContent = currentPlayer;
+    cells[idx].classList.add('taken');
+
+    const combo = getWinningCombo();
+    if(combo){
+      gameActive=false;
+      turnIndicator.textContent = `Winner: ${currentPlayer}`;
+      currentPlayer==='X'? xScore++ : oScore++;
+      saveScores();
+      updateScoreDisplay();
+      lastWinningCombo = combo;
+      drawWinningLine(combo);
+      return;
+    }
+
+    if(board.every(Boolean)){
+      gameActive=false;
+      turnIndicator.textContent = 'Draw!';
+      return;
+    }
+
+    currentPlayer = currentPlayer==='X'? 'O':'X';
+    updateTurnIndicator();
+  }
+
+  function getWinningCombo(){
+    for(const [a,b,c] of winningCombos){
+      if(board[a] && board[a]===board[b] && board[a]===board[c]) return [a,b,c];
+    }
+    return null;
+  }
+
+  function drawWinningLine([a,,,]){
+    clearWinningLine();
+    const [first, , last] = arguments[0];
+
+    const rectA = cells[first].getBoundingClientRect();
+    const rectC = cells[last].getBoundingClientRect();
+    const boardRect = boardEl.getBoundingClientRect();
+
+    const ax = rectA.left + rectA.width/2 - boardRect.left;
+    const ay = rectA.top + rectA.height/2 - boardRect.top;
+    const cx = rectC.left + rectC.width/2 - boardRect.left;
+    const cy = rectC.top + rectC.height/2 - boardRect.top;
+
+    const dx = cx - ax, dy = cy - ay;
+    const length = Math.hypot(dx, dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    const midX = (ax+cx)/2, midY=(ay+cy)/2;
+
+    winLineEl = document.createElement('div');
+    winLineEl.className='win-line';
+    winLineEl.style.width = `${length}px`;
+    const thickness = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--line-thickness'))||6;
+    winLineEl.style.height = `${thickness}px`;
+    winLineEl.style.left = `${midX-length/2}px`;
+    winLineEl.style.top = `${midY-thickness/2}px`;
+    winLineEl.style.transform = `rotate(${angle}deg)`;
+    boardEl.appendChild(winLineEl);
+  }
+
+  function clearWinningLine(){
+    if(winLineEl){ winLineEl.remove(); winLineEl=null; }
+  }
+
+  function updateScoreDisplay(){
+    xScoreEl.textContent = xScore;
+    oScoreEl.textContent = oScore;
+  }
+
+  function updateTurnIndicator(){
+    turnIndicator.textContent = `${currentPlayer} Turn`;
+  }
+
+  function resetGame(){
+    board.fill('');
+    gameActive=true;
+    currentPlayer='X';
+    cells.forEach(cell=>{
+      cell.textContent='';
+      cell.classList.remove('taken');
+    });
+    updateTurnIndicator();
+    clearWinningLine();
+  }
+
+  function saveScores(){
+    localStorage.setItem('tictactoeScores', JSON.stringify({x:xScore,o:oScore}));
+  }
+
+  playAgainBtn.addEventListener('click', resetGame);
+
+  window.addEventListener('resize', ()=>{
+    if(!gameActive && lastWinningCombo) drawWinningLine(lastWinningCombo);
+  });
+
+  updateTurnIndicator();
+</script>
 </body>
 </html>
