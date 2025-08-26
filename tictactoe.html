@@ -1,87 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tic Tac Toe</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      text-align: center;
       margin: 0;
-      background-color: #f5f5f5;
+      padding: 20px;
+      background-color: #f9f9f9;
     }
 
-    .container {
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .game-container {
       display: flex;
-      gap: 20px;
+      flex-direction: row;
+      justify-content: center;
       align-items: flex-start;
-      flex-wrap: wrap; /* ✅ allows mobile stacking */
+      gap: 20px;
+      flex-wrap: wrap;
     }
 
+    /* Tic Tac Toe board */
     .board {
       display: grid;
-      grid-template-columns: repeat(3, min(80px, 20vw));
-      grid-template-rows: repeat(3, min(80px, 20vw));
-      gap: 4px;
-      position: relative;
-      max-width: 300px;   /* ✅ cap size for mobile */
-      max-height: 300px;
-    }
-
-    .cell {
-      background-color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: min(10vw, 40px); /* ✅ responsive but capped */
-      cursor: pointer;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      width: 300px;
+      height: 300px;
       border: 2px solid black;
+      position: relative;
     }
 
+    /* Make cells touch each other */
+    .cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      cursor: pointer;
+      border: 1px solid black;
+      user-select: none;
+    }
+
+    /* Remove double borders so the grid looks seamless */
+    .cell:nth-child(1),
+    .cell:nth-child(2),
+    .cell:nth-child(3) {
+      border-top: none;
+    }
+    .cell:nth-child(1),
+    .cell:nth-child(4),
+    .cell:nth-child(7) {
+      border-left: none;
+    }
+    .cell:nth-child(3),
+    .cell:nth-child(6),
+    .cell:nth-child(9) {
+      border-right: none;
+    }
+    .cell:nth-child(7),
+    .cell:nth-child(8),
+    .cell:nth-child(9) {
+      border-bottom: none;
+    }
+
+    /* Winning line */
     .line {
       position: absolute;
-      background-color: black; /* ✅ black line */
+      background-color: black;
       transform-origin: center;
-      z-index: 1;
     }
 
+    /* Controls */
     .controls {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      align-items: center;
     }
 
     button {
-      padding: 10px 15px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      background-color: black; /* ✅ all back buttons black */
-      color: white;
+      padding: 10px 20px;
+      font-size: 1em;
       cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background-color: black;
+      color: white;
+      transition: background 0.2s;
     }
 
     button:hover {
-      opacity: 0.8;
+      background-color: #333;
     }
 
+    /* Responsive board for mobile */
     @media (max-width: 600px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
+      .board {
+        width: 240px;
+        height: 240px;
+      }
+      .cell {
+        font-size: 1.5em;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <h1>Tic Tac Toe</h1>
+  <div class="game-container">
     <div class="board" id="board"></div>
     <div class="controls">
-      <button onclick="resetGame()">Reset Game</button>
+      <button onclick="restartGame()">Restart</button>
       <button onclick="goBack()">Back</button>
     </div>
   </div>
@@ -90,28 +126,41 @@
     const boardElement = document.getElementById("board");
     let board = Array(9).fill(null);
     let currentPlayer = "X";
+    let gameOver = false;
+    let lineElement = null;
 
-    // Create board cells
-    board.forEach((_, i) => {
-      const cell = document.createElement("div");
-      cell.classList.add("cell");
-      cell.dataset.index = i;
-      cell.addEventListener("click", handleCellClick);
-      boardElement.appendChild(cell);
-    });
-
-    function handleCellClick(e) {
-      const index = e.target.dataset.index;
-      if (!board[index]) {
-        board[index] = currentPlayer;
-        e.target.textContent = currentPlayer;
-        if (checkWinner()) {
-          setTimeout(() => alert(`${currentPlayer} wins!`), 100);
-        } else if (board.every(cell => cell)) {
-          setTimeout(() => alert("It's a draw!"), 100);
-        }
-        currentPlayer = currentPlayer === "X" ? "O" : "X";
+    function createBoard() {
+      boardElement.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", handleClick);
+        boardElement.appendChild(cell);
       }
+    }
+
+    function handleClick(e) {
+      const index = e.target.dataset.index;
+      if (board[index] || gameOver) return;
+
+      board[index] = currentPlayer;
+      e.target.textContent = currentPlayer;
+
+      if (checkWinner()) {
+        gameOver = true;
+        drawLine(checkWinner());
+        setTimeout(() => alert(currentPlayer + " wins!"), 100);
+        return;
+      }
+
+      if (board.every(cell => cell)) {
+        gameOver = true;
+        setTimeout(() => alert("It's a draw!"), 100);
+        return;
+      }
+
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
     }
 
     function checkWinner() {
@@ -129,90 +178,81 @@
       for (let pattern of winPatterns) {
         const [a, b, c] = pattern;
         if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          drawWinningLine(pattern);
-          return true;
+          return pattern;
         }
       }
-      return false;
+      return null;
     }
 
-    function drawWinningLine(pattern) {
-      const line = document.createElement("div");
-      line.classList.add("line");
+    function drawLine(pattern) {
+      if (lineElement) lineElement.remove();
+      lineElement = document.createElement("div");
+      lineElement.classList.add("line");
 
-      const rect = boardElement.getBoundingClientRect();
-      const cellSize = boardElement.offsetWidth / 3;
+      const boardSize = boardElement.offsetWidth;
+      const cellSize = boardSize / 3;
+      const thickness = 4;
 
-      switch (pattern.toString()) {
-        case "0,1,2": // top row
-          line.style.width = "100%";
-          line.style.height = "4px";
-          line.style.top = `${cellSize / 2 - 2}px`;
-          line.style.left = "0";
-          break;
-        case "3,4,5": // middle row
-          line.style.width = "100%";
-          line.style.height = "4px";
-          line.style.top = `${cellSize * 1.5 - 2}px`;
-          line.style.left = "0";
-          break;
-        case "6,7,8": // bottom row
-          line.style.width = "100%";
-          line.style.height = "4px";
-          line.style.top = `${cellSize * 2.5 - 2}px`;
-          line.style.left = "0";
-          break;
-        case "0,3,6": // left col
-          line.style.height = "100%";
-          line.style.width = "4px";
-          line.style.left = `${cellSize / 2 - 2}px`;
-          line.style.top = "0";
-          break;
-        case "1,4,7": // middle col
-          line.style.height = "100%";
-          line.style.width = "4px";
-          line.style.left = `${cellSize * 1.5 - 2}px`;
-          line.style.top = "0";
-          break;
-        case "2,5,8": // right col
-          line.style.height = "100%";
-          line.style.width = "4px";
-          line.style.left = `${cellSize * 2.5 - 2}px`;
-          line.style.top = "0";
-          break;
-        case "0,4,8": // diag ↘
-          line.style.width = "141%";
-          line.style.height = "4px";
-          line.style.top = "50%";
-          line.style.left = "-20%";
-          line.style.transform = "rotate(45deg)";
-          break;
-        case "2,4,6": // diag ↙
-          line.style.width = "141%";
-          line.style.height = "4px";
-          line.style.top = "50%";
-          line.style.left = "-20%";
-          line.style.transform = "rotate(-45deg)";
-          break;
+      if (pattern[0] === 0 && pattern[1] === 1 && pattern[2] === 2) {
+        lineElement.style.width = boardSize + "px";
+        lineElement.style.height = thickness + "px";
+        lineElement.style.top = cellSize / 2 - thickness / 2 + "px";
+        lineElement.style.left = "0";
+      } else if (pattern[0] === 3 && pattern[1] === 4 && pattern[2] === 5) {
+        lineElement.style.width = boardSize + "px";
+        lineElement.style.height = thickness + "px";
+        lineElement.style.top = cellSize * 1.5 - thickness / 2 + "px";
+        lineElement.style.left = "0";
+      } else if (pattern[0] === 6 && pattern[1] === 7 && pattern[2] === 8) {
+        lineElement.style.width = boardSize + "px";
+        lineElement.style.height = thickness + "px";
+        lineElement.style.top = cellSize * 2.5 - thickness / 2 + "px";
+        lineElement.style.left = "0";
+      } else if (pattern[0] === 0 && pattern[1] === 3 && pattern[2] === 6) {
+        lineElement.style.width = thickness + "px";
+        lineElement.style.height = boardSize + "px";
+        lineElement.style.top = "0";
+        lineElement.style.left = cellSize / 2 - thickness / 2 + "px";
+      } else if (pattern[0] === 1 && pattern[1] === 4 && pattern[2] === 7) {
+        lineElement.style.width = thickness + "px";
+        lineElement.style.height = boardSize + "px";
+        lineElement.style.top = "0";
+        lineElement.style.left = cellSize * 1.5 - thickness / 2 + "px";
+      } else if (pattern[0] === 2 && pattern[1] === 5 && pattern[2] === 8) {
+        lineElement.style.width = thickness + "px";
+        lineElement.style.height = boardSize + "px";
+        lineElement.style.top = "0";
+        lineElement.style.left = cellSize * 2.5 - thickness / 2 + "px";
+      } else if (pattern[0] === 0 && pattern[1] === 4 && pattern[2] === 8) {
+        lineElement.style.width = boardSize * 1.4 + "px";
+        lineElement.style.height = thickness + "px";
+        lineElement.style.top = boardSize / 2 - thickness / 2 + "px";
+        lineElement.style.left = -boardSize * 0.2 + "px";
+        lineElement.style.transform = "rotate(45deg)";
+      } else if (pattern[0] === 2 && pattern[1] === 4 && pattern[2] === 6) {
+        lineElement.style.width = boardSize * 1.4 + "px";
+        lineElement.style.height = thickness + "px";
+        lineElement.style.top = boardSize / 2 - thickness / 2 + "px";
+        lineElement.style.left = -boardSize * 0.2 + "px";
+        lineElement.style.transform = "rotate(-45deg)";
       }
 
-      boardElement.appendChild(line);
+      boardElement.appendChild(lineElement);
     }
 
-    function resetGame() {
+    function restartGame() {
       board = Array(9).fill(null);
       currentPlayer = "X";
-      Array.from(document.getElementsByClassName("cell")).forEach(cell => {
-        cell.textContent = "";
-      });
-      Array.from(document.getElementsByClassName("line")).forEach(line => {
-        line.remove();
-      });
+      gameOver = false;
+      if (lineElement) lineElement.remove();
+      createBoard();
     }
 
     function goBack() {
-      window.location.href = "index.html"; // ✅ goes back to main
+      window.location.href = "index.html";
     }
+
+    createBoard();
   </script>
 </body>
 </html>
